@@ -5,7 +5,7 @@ Welcome to the unofficial [Agones](https://agones.dev/site/) SDK for [Godot Engi
 
 [Agones](https://agones.dev/site/) is an open source, batteries-included, multiplayer dedicated game server scaling and orchestration platform that can run anywhere Kubernetes can run.
 
-This plugin allows your Godot Scripts communicate with [Agones SDK Server](https://agones.dev/site/docs/guides/client-sdks/) by wrapping its REST API and giving you simple **GDScript** functions to use in your scripts.
+This plugin allows your Godot Scripts communicate with [Agones SDK Server](https://agones.dev/site/docs/guides/client-sdks/) by giving you simple **GDScript** functions. Internally it works by calling the REST API that comes with Agones Server.
 
 > Only GDScript is supported for now
 
