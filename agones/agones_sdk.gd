@@ -18,7 +18,7 @@ func start():
 	agones_sdk_http_port = OS.get_environment("AGONES_SDK_HTTP_PORT")
 	print("[AGONES] SDK STARTING UP... PORT FOUND: %s" % agones_sdk_http_port)
 
-func ready(retry = 10, wait_time = 2):
+func ready(retry = 10, wait_time = 2.0):
 	var real_retry = max(1, retry + 1)
 	var i = 0
 	var success = false
