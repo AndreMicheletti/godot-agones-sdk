@@ -1,5 +1,5 @@
-# (Unofficial) Agones SDK for Godot
-### Version 0.1.0
+# Agones SDK for Godot
+### Version 0.1.2
 
 Welcome to the unofficial [Agones](https://agones.dev/site/) SDK for [Godot Engine](https://godotengine.org/).
 
@@ -10,6 +10,25 @@ This plugin allows your Godot Scripts communicate with [Agones SDK Server](https
 > Only GDScript is supported for now
 
 ## Install
+
+To install this plugin, go to [Releases](https://github.com/AndreMicheletti/godot-agones-sdk/releases/tag/0.1.1) and download the latest version `agones-sdk.zip`.
+
+Inside your Godot Project folder, create a folder named `addons` and extract the zip file inside it.
+
+After installed, your folder structure will look like this:
+
+```
+my-project/
+├── addons/
+|   ├── agones/
+│   |    ├── agones_sdk.gd
+│   |    ├── agones_wrapper.gd
+│   |    ├── plugin.cfg
+├── graphics/
+├── sounds/
+├── scenes/
+├── ...
+```
 
 ## Usage
 
