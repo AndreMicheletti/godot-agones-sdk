@@ -30,7 +30,10 @@ jobs:
 
       - run: cd $GITHUB_WORKSPACE
 
-      - name: Tag and Publish
-        run: make publish
+      - name: Login to gh-cli
+        run: gh auth login --with-token $GITHUB_TOKEN
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
+      - name: Tag and Publish
+        run: make publish
