@@ -31,7 +31,7 @@ jobs:
       - run: cd $GITHUB_WORKSPACE
 
       - name: Login to gh-cli
-        run: gh auth login --with-token $GITHUB_TOKEN
+        run: gh auth login --with-token < echo $GITHUB_TOKEN
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
