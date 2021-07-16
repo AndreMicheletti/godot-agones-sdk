@@ -1,5 +1,7 @@
 # Agones SDK for Godot
-### Version 0.1.2
+[![Release](https://github.com/AndreMicheletti/godot-agones-sdk/actions/workflows/release.yml/badge.svg?branch=master)](https://github.com/AndreMicheletti/godot-agones-sdk/actions/workflows/release.yml)
+
+> v0.1.4
 
 Welcome to the community-driven [Agones](https://agones.dev/site/) SDK for [Godot Engine](https://godotengine.org/).
 
@@ -59,6 +61,16 @@ After installed, your folder structure will look like this:
 See [Agones - Client SDK](https://agones.dev/site/docs/guides/client-sdks/#function-reference)
 
 ## Reference
+
+| Type | Syntax | Description |
+| ---- | ---- | ----------- |
+| `func`      | `.ready(retry, wait_time)` | `retry` how many times it will retry. `wait_time` time in seconds to wait between retries |
+| `func` | `.health()` | Sends a health check |
+| `func` | `.reserve(seconds)` | Reserve for `seconds` |
+| `func` | `.allocate()` | Set GameServer as Allocated |
+| `func` | `.shutdown()` | Tells Agones to shutdown server |
+| `signal` | `agones_response(success, endpoint, content)` | Emitted when SDK receives an response from Agones. `success` Boolean if response is sucessfull. `endpoint` the requested endpoint. `content` the error message or request body, usually as a Dictionary |
+| `signal` | `agones_ready_failed` | Emitted when `.ready` fails all its attempts.  |
 
 ## Contributing
 
