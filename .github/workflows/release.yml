@@ -30,12 +30,7 @@ jobs:
 
       - run: cd $GITHUB_WORKSPACE
 
-      - name: Login to gh-cli
-        run: |
-          echo $GITHUB_TOKEN > my_token.txt
-          gh auth login --with-token < my_token.txt
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Tag and Publish
         run: make publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
