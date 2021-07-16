@@ -26,6 +26,6 @@ jobs:
       - name: Tag and Publish
         run: |
           cd $GITHUB_WORKSPACE
-          make publishenv:
+          make publish
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
