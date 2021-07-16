@@ -35,7 +35,7 @@ jobs:
           echo $GITHUB_TOKEN > my_token.txt
           gh auth login --with-token < my_token.txt
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tag and Publish
         run: make publish
