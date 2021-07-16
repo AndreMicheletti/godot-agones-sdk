@@ -23,9 +23,14 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Tag and Publish
+      - name: Configure user
         run: |
-          cd $GITHUB_WORKSPACE
-          make publish
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+
+      - run: cd $GITHUB_WORKSPACE
+
+      - name: Tag and Publish
+        run: make publish
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
