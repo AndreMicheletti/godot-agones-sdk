@@ -5,25 +5,26 @@ Welcome to the community-driven [Agones](https://agones.dev/site/) SDK for [Godo
 
 ## Example
 
-```
+```GDScript
 extends Node
 var peer = null
 
 func _ready():
   if "--server" in OS.get_cmdline_args() or OS.has_feature("Server"):
-		host_server(DEFAULT_PORT, MAX_PEERS)
+    host_server(DEFAULT_PORT, MAX_PEERS)
 
 func host_server(port, max_peers):
-	peer = NetworkedMultiplayerENet.new()
-	peer.create_server(port, max_peers)
-	get_tree().set_network_peer(peer)
+  peer = NetworkedMultiplayerENet.new()
+  peer.create_server(port, max_peers)
+  get_tree().set_network_peer(peer)
   # Initialize AGONES SDK
-	AgonesSDK.start()
-  # Agones READY
+  AgonesSDK.start()
+  # Agones .Ready()
   AgonesSDK.ready()
 
 func _process(delta):
   if peer:
+    # Agones .Health()
     AgonesSDK.health()
 ```
 
