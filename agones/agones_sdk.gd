@@ -52,7 +52,7 @@ func gameserver():
 
 func agones_sdk_get(endpoint: String) -> bool:
 	if not has_port():
-		print("[AGONES] AGONES_SDK_HTTP_PORT not found. skipping %s call" %s endpoint)
+		print("[AGONES] AGONES_SDK_HTTP_PORT not found. skipping %s call" % endpoint)
 		on_request_completed(1, 1, PoolStringArray(), PoolByteArray())
 		return false
 	print("[AGONES] GET %s" % endpoint)
@@ -66,7 +66,7 @@ func agones_sdk_get(endpoint: String) -> bool:
 
 func agones_sdk_post(endpoint: String, body: Dictionary) -> bool:
 	if not has_port():
-		print("[AGONES] AGONES_SDK_HTTP_PORT not found. skipping %s call" %s endpoint)
+		print("[AGONES] AGONES_SDK_HTTP_PORT not found. skipping %s call" % endpoint)
 		on_request_completed(1, 1, PoolStringArray(), PoolByteArray())
 		return false
 	print("[AGONES] POST %s" % endpoint)
