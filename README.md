@@ -1,7 +1,31 @@
 # Agones SDK for Godot
 ### Version 0.1.2
 
-Welcome to the unofficial [Agones](https://agones.dev/site/) SDK for [Godot Engine](https://godotengine.org/).
+Welcome to the community-driven [Agones](https://agones.dev/site/) SDK for [Godot Engine](https://godotengine.org/).
+
+## Example
+
+```
+extends Node
+var peer = null
+
+func _ready():
+  if "--server" in OS.get_cmdline_args() or OS.has_feature("Server"):
+		host_server(DEFAULT_PORT, MAX_PEERS)
+
+func host_server(port, max_peers):
+	peer = NetworkedMultiplayerENet.new()
+	peer.create_server(port, max_peers)
+	get_tree().set_network_peer(peer)
+  # Initialize AGONES SDK
+	AgonesSDK.start()
+  # Agones READY
+  AgonesSDK.ready()
+
+func _process(delta):
+  if peer:
+    AgonesSDK.health()
+```
 
 [Agones](https://agones.dev/site/) is an open source, batteries-included, multiplayer dedicated game server scaling and orchestration platform that can run anywhere Kubernetes can run.
 
@@ -17,20 +41,23 @@ Inside your Godot Project folder, create a folder named `addons` and extract the
 
 After installed, your folder structure will look like this:
 
-```
-my-project/
-├── addons/
-|   ├── agones/
-│   |    ├── agones_sdk.gd
-│   |    ├── agones_wrapper.gd
-│   |    ├── plugin.cfg
-├── graphics/
-├── sounds/
-├── scenes/
-├── ...
-```
+![image](https://user-images.githubusercontent.com/16908595/126000349-572411bd-e596-45c1-b7c2-bb3f34d595d2.png)
 
-## Usage
+## Getting Started
+
+### Activate the plugin
+
+- Open your project in Godot Editor
+- Go to Project > Project Settings... > Plugins
+- You should see AgonesSDK Plugin. On the right side, check the "Enable" box
+
+![image](https://user-images.githubusercontent.com/16908595/126000549-9135b9da-22bf-4163-9409-994bef4fafc0.png)
+
+### Use the plugin functions
+
+See [Agones - Client SDK](https://agones.dev/site/docs/guides/client-sdks/#function-reference)
+
+## Reference
 
 ## Contributing
 
