@@ -1,7 +1,10 @@
 # Agones SDK for Godot
 [![Release](https://github.com/AndreMicheletti/godot-agones-sdk/actions/workflows/release.yml/badge.svg?branch=master)](https://github.com/AndreMicheletti/godot-agones-sdk/actions/workflows/release.yml)
+<img src="https://img.shields.io/github/v/release/AndreMicheletti/godot-agones-sdk">
 
-> v0.1.4
+<p align="center">
+<img src="https://raw.githubusercontent.com/AndreMicheletti/godot-agones-sdk/master/agones-sdk-icon.svg" width="250">
+</p>
 
 Welcome to the community-driven [Agones](https://agones.dev/site/) SDK for [Godot Engine](https://godotengine.org/).
 
