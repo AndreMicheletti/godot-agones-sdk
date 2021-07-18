@@ -2,6 +2,9 @@
 PACKAGE_NAME := agones-sdk.zip
 VERSION := $$(cat agones/plugin.cfg | grep -o -P '(?<=version\=\").*(?=\")')
 
+has-version:
+	@git tag -l | grep "v$(VERSION)"
+
 package:
 	@zip -r $(PACKAGE_NAME) ./agones/
 

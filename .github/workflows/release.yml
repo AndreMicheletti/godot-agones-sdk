@@ -30,7 +30,11 @@ jobs:
 
       - run: cd $GITHUB_WORKSPACE
 
+      - name: Check version exists
+        run: make has-version
+
       - name: Tag and Publish
+        if: ${{ failure() }}
         run: make publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
