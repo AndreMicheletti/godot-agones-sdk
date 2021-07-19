@@ -30,12 +30,7 @@ jobs:
 
       - run: cd $GITHUB_WORKSPACE
 
-      - name: Check version exists
-        continue-on-error: true
-        run: make has-version
-
       - name: Tag and Publish
-        if: ${{ failure() }}
-        run: make publish
+        run: git tag -l | grep v$(make version) || make publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
