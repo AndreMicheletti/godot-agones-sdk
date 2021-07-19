@@ -32,12 +32,12 @@ func _process(delta):
     # Agones .Health()
     AgonesSDK.health()
 ```
+**What is Agones?**
+> [Agones](https://agones.dev/site/) is an open source, batteries-included, multiplayer dedicated game server scaling and orchestration platform that can run anywhere Kubernetes can run.
 
-[Agones](https://agones.dev/site/) is an open source, batteries-included, multiplayer dedicated game server scaling and orchestration platform that can run anywhere Kubernetes can run.
+This plugin allows your Godot Scripts communicate with [Agones SDK](https://agones.dev/site/docs/guides/client-sdks/) by giving you simple **GDScript** functions. Internally it works by calling the REST API that comes with Agones Server.
 
-This plugin allows your Godot Scripts communicate with [Agones SDK Server](https://agones.dev/site/docs/guides/client-sdks/) by giving you simple **GDScript** functions. Internally it works by calling the REST API that comes with Agones Server.
-
-> Only GDScript is supported for now
+Only GDScript is supported for now
 
 ## Install
 
