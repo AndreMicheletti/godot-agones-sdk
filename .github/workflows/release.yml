@@ -31,7 +31,9 @@ jobs:
       - run: cd $GITHUB_WORKSPACE
 
       - name: echo version
-        run: git tag -l
+        run: |
+          git remote update
+          git tag -l
 
       - name: Tag and Publish
         run: git tag -l | grep v$(make version) || make publish
