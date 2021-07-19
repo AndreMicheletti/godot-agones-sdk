@@ -30,6 +30,9 @@ jobs:
 
       - run: cd $GITHUB_WORKSPACE
 
+      - name: echo version
+        run: git tag -l | grep v$(make version)
+
       - name: Tag and Publish
         run: git tag -l | grep v$(make version) || make publish
         env:
