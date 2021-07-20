@@ -1,6 +1,7 @@
 tool
 extends HTTPRequest
 
+
 signal agones_response(success, endpoint, content)
 signal agones_ready_failed()
 
@@ -59,35 +60,47 @@ func gameserver():
 	agones_sdk_get("/gameserver")
 
 
+func set_label(key: String, value: String):
+	agones_sdk_put("/metadata/label", {"key": key, "value": value})
+
+
+func set_annotation(key: String, value: String):
+	agones_sdk_put("/metadata/annotation", {"key": key, "value": value})
+
+	
 func agones_sdk_get(endpoint: String) -> bool:
 	if not has_port():
 		print("[AGONES] AGONES_SDK_HTTP_PORT not found. skipping %s call" % endpoint)
-		on_request_completed(1, 1, PoolStringArray(), PoolByteArray())
-		return false
+		return on_request_error()
 	print("[AGONES] GET %s" % endpoint)
 	requested_endpoint = endpoint
 	var res = request(sdk_url(endpoint))
-	if res == OK:
-		return true
-	else:
-		on_request_completed(res, 1, PoolStringArray(), PoolByteArray())
-		return false
+	return true if res == OK else on_request_error(res)
 
 
 func agones_sdk_post(endpoint: String, body: Dictionary) -> bool:
+	return agones_sdk_send(endpoint, body, HTTPClient.METHOD_POST)
+
+
+func agones_sdk_put(endpoint: String, body: Dictionary) -> bool:
+	return agones_sdk_send(endpoint, body, HTTPClient.METHOD_PUT)
+
+
+func agones_sdk_send(endpoint: String, body: Dictionary, method = HTTPClient.METHOD_POST) -> bool:
 	if not has_port():
 		print("[AGONES] AGONES_SDK_HTTP_PORT not found. skipping %s call" % endpoint)
-		on_request_completed(1, 1, PoolStringArray(), PoolByteArray())
+		on_request_error()
 		return false
 	print("[AGONES] POST %s" % endpoint)
 	var headers = ["Content-Type: application/json"]
 	requested_endpoint = endpoint
-	var res = request(sdk_url(endpoint), headers, false, HTTPClient.METHOD_POST, JSON.print(body))
-	if res == OK:
-		return true
-	else:
-		on_request_completed(res, 1, PoolStringArray(), PoolByteArray())
-		return false
+	var res = request(sdk_url(endpoint), headers, false, method, JSON.print(body))
+	return true if res == OK else on_request_error(res)
+
+
+func on_request_error(error_code: int = 1) -> bool:
+	on_request_completed(error_code, 1, PoolStringArray(), PoolByteArray())
+	return false
 
 
 func on_request_completed(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray):
