@@ -8,15 +8,18 @@ var ready = false
 var agones_sdk_http_port = ""
 var requested_endpoint = ""
 
+
 func _ready():
 	if not ready:
 		start()
+
 
 func start():
 	ready = true
 	connect("request_completed", self, "on_request_completed")
 	agones_sdk_http_port = OS.get_environment("AGONES_SDK_HTTP_PORT")
 	print("[AGONES] SDK STARTING UP... PORT FOUND: %s" % agones_sdk_http_port)
+
 
 func ready(retry = 10, wait_time = 2.0):
 	var real_retry = max(1, retry + 1)
@@ -35,20 +38,26 @@ func ready(retry = 10, wait_time = 2.0):
 	if not success:
 		emit_signal("agones_ready_failed")
 
+
 func health():
 	agones_sdk_post("/health", {})
+
 
 func reserve(seconds: int):
 	agones_sdk_post("/reserve", {"seconds": seconds})
 
+
 func allocate():
 	agones_sdk_post("/allocate", {})
+
 
 func shutdown():
 	agones_sdk_post("/shutdown", {})
 
+
 func gameserver():
 	agones_sdk_get("/gameserver")
+
 
 func agones_sdk_get(endpoint: String) -> bool:
 	if not has_port():
@@ -63,6 +72,7 @@ func agones_sdk_get(endpoint: String) -> bool:
 	else:
 		on_request_completed(res, 1, PoolStringArray(), PoolByteArray())
 		return false
+
 
 func agones_sdk_post(endpoint: String, body: Dictionary) -> bool:
 	if not has_port():
@@ -79,6 +89,7 @@ func agones_sdk_post(endpoint: String, body: Dictionary) -> bool:
 		on_request_completed(res, 1, PoolStringArray(), PoolByteArray())
 		return false
 
+
 func on_request_completed(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray):
 	print("[AGONES] REQUESTED COMPLETED. RESPONSE_CODE: %d | CODE: %d" % [response_code, result])
 	if result != OK:
@@ -88,8 +99,10 @@ func on_request_completed(result: int, response_code: int, headers: PoolStringAr
 		emit_signal("agones_response", true, requested_endpoint, dict_body)
 	requested_endpoint = ""
 
+
 func sdk_url(endpoint):
 	return "http://localhost:%s%s" % [OS.get_environment("AGONES_SDK_HTTP_PORT"), endpoint]
+
 
 func has_port():
 	return agones_sdk_http_port != ""
