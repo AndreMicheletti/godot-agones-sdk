@@ -63,7 +63,11 @@ After installed, your folder structure will look like this:
 
 ### Use the plugin functions
 
-See [Agones - Client SDK](https://agones.dev/site/docs/guides/client-sdks/#function-reference)
+You now have access to a singleton called `AgonesSDK`, which you can use to call SDK functions.
+
+The SDK functions does the communication with [Agones's sidecar server](https://agones.dev/site/docs/guides/client-sdks/#connecting-to-the-sdk-server), which is a small server that goes with your Godot dedicated server inside the Agones Container.
+
+If you want to test in local environment, check this page [Local Development - Agones](https://agones.dev/site/docs/guides/client-sdks/local/)
 
 ## Reference
 
@@ -76,6 +80,8 @@ See [Agones - Client SDK](https://agones.dev/site/docs/guides/client-sdks/#funct
 | `func` | `.shutdown()` | Tells Agones to shutdown server |
 | `signal` | `agones_response(success, endpoint, content)` | Emitted when SDK receives an response from Agones. `success` Boolean if response is sucessfull. `endpoint` the requested endpoint. `content` the error message or request body, usually as a Dictionary |
 | `signal` | `agones_ready_failed` | Emitted when `.ready` fails all its attempts.  |
+
+See [Agones - Client SDK](https://agones.dev/site/docs/guides/client-sdks/#function-reference) 
 
 ## Contributing
 
