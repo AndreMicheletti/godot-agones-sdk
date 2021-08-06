@@ -37,7 +37,7 @@ func _process(delta):
 **What is Agones?**
 > [Agones](https://agones.dev/site/) is an open source, batteries-included, multiplayer dedicated game server scaling and orchestration platform that can run anywhere Kubernetes can run.
 
-This plugin allows your Godot Scripts communicate with [Agones SDK](https://agones.dev/site/docs/guides/client-sdks/) by giving you simple **GDScript** functions. Internally it works by calling the REST API that comes with Agones Server.
+This plugin allows your Godot Scripts communicate with [Agones](https://agones.dev/site/docs/guides/client-sdks/) by giving you simple **GDScript** functions. Internally it works by calling the REST API that comes with Agones Server.
 
 Only GDScript is supported for now
 
@@ -61,13 +61,80 @@ After installed, your folder structure will look like this:
 
 ![image](https://user-images.githubusercontent.com/16908595/126000549-9135b9da-22bf-4163-9409-994bef4fafc0.png)
 
-### Use the plugin functions
+## Use the SDK functions
 
 You now have access to a singleton called `AgonesSDK`, which you can use to call SDK functions.
 
 The SDK functions does the communication with [Agones's sidecar server](https://agones.dev/site/docs/guides/client-sdks/#connecting-to-the-sdk-server), which is a small server that goes with your Godot dedicated server inside the Agones Container.
 
 If you want to test in local environment, check this page [Local Development - Agones](https://agones.dev/site/docs/guides/client-sdks/local/)
+
+### Ready()
+
+```GDScript
+# Simple usage. Automatically retries 10 times and waits 2 seconds before trying again.
+AgonesSDK.ready()
+
+# Tries 30 times, waiting 5 seconds between each attempt.
+AgonesSDK.ready(30, 5)
+```
+
+### Health()
+
+```GDScript
+AgonesSDK.health()
+```
+
+### Reserve()
+
+```GDScript
+# Reserves the server for 10 seconds
+AgonesSDK.reserve(10)
+
+# Reserves the server for 60 seconds
+AgonesSDK.reserve(60)
+```
+
+### Allocate()
+
+```GDScript
+AgonesSDK.allocate()
+```
+
+### Shutdown()
+
+```GDScript
+AgonesSDK.shutdown()
+```
+
+### GameServer()
+
+```GDScript
+# Get gameserver information
+result = yield(AgonesSDK.gameserver(), "agones_response")
+
+success = result[0]  # true if the request was successfull, false otherwise
+requested_endpoint = result[1]  # the url requested
+info_dict = result[2]  # the JSON body returned by agones sidecar
+```
+
+### SetLabel(key, value) 
+
+```GDScript
+# Set metadata label on agones sidecar servr
+AgonesSDK.set_label('version', '1.0.0')
+```
+
+### SetAnnotation(key, value)
+
+```GDScript
+# Set metadata annotation on agones sidecar servr
+AgonesSDK.set_annotation('version', '1.0.0')
+```
+
+## Player Tracking
+
+As of writing, the Player Tracking feature of Agones is not implemented by the SDK. Feel free to contribute and send your pull request.
 
 ## Reference
 
