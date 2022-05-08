@@ -1,5 +1,5 @@
 tool
-extends HTTPRequest
+extends Node
 
 
 signal agones_response(success, endpoint, content)
@@ -17,8 +17,10 @@ func _ready():
 
 func start():
 	ready = true
-	connect("request_completed", self, "on_request_completed")
 	agones_sdk_http_port = OS.get_environment("AGONES_SDK_HTTP_PORT")
+	if agones_sdk_http_port == "":
+		print("[AGONES] AGONES_SDK_HTTP_PORT ENV NOT SET USING DEVELOPMENT PORT")
+		agones_sdk_http_port = "9358"
 	print("[AGONES] SDK STARTING UP... PORT FOUND: %s" % agones_sdk_http_port)
 
 
@@ -59,6 +61,11 @@ func shutdown():
 func gameserver():
 	agones_sdk_get("/gameserver")
 
+func player_connect(player_id: String):
+	agones_sdk_post("/alpha/player/connect", {"playerID": player_id})
+
+func player_disconnect(player_id: String):
+	agones_sdk_post("/alpha/player/disconnect", {"playerID": player_id})
 
 func set_label(key: String, value: String):
 	agones_sdk_put("/metadata/label", {"key": key, "value": value})
@@ -73,9 +80,7 @@ func agones_sdk_get(endpoint: String) -> bool:
 		print("[AGONES] AGONES_SDK_HTTP_PORT not found. skipping %s call" % endpoint)
 		return on_request_error()
 	print("[AGONES] GET %s" % endpoint)
-	requested_endpoint = endpoint
-	var res = request(sdk_url(endpoint))
-	return true if res == OK else on_request_error(res)
+	return agones_sdk_send(endpoint, {}, HTTPClient.METHOD_GET)
 
 
 func agones_sdk_post(endpoint: String, body: Dictionary) -> bool:
@@ -94,16 +99,22 @@ func agones_sdk_send(endpoint: String, body: Dictionary, method = HTTPClient.MET
 	print("[AGONES] POST %s" % endpoint)
 	var headers = ["Content-Type: application/json"]
 	requested_endpoint = endpoint
-	var res = request(sdk_url(endpoint), headers, false, method, JSON.print(body))
-	return true if res == OK else on_request_error(res)
 
+	var req = HTTPRequest.new()
+	add_child(req)
+	req.connect("request_completed", self, "on_request_completed", [req])
+
+	var res = req.request(sdk_url(endpoint), headers, false, method, JSON.print(body))
+	return true if res == OK else on_request_error(res)
 
 func on_request_error(error_code: int = 1) -> bool:
 	on_request_completed(error_code, 1, PoolStringArray(), PoolByteArray())
 	return false
 
+func on_request_completed(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray, req_node : HTTPRequest = null):
+	if req_node != null:
+		req_node.call_deferred("queue_free")
 
-func on_request_completed(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray):
 	print("[AGONES] REQUESTED COMPLETED. RESPONSE_CODE: %d | CODE: %d" % [response_code, result])
 	if result != OK:
 		emit_signal("agones_response", false, requested_endpoint, result)
@@ -114,7 +125,7 @@ func on_request_completed(result: int, response_code: int, headers: PoolStringAr
 
 
 func sdk_url(endpoint):
-	return "http://localhost:%s%s" % [OS.get_environment("AGONES_SDK_HTTP_PORT"), endpoint]
+	return "http://localhost:%s%s" % [agones_sdk_http_port, endpoint]
 
 
 func has_port():
