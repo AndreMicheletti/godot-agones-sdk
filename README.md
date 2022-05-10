@@ -133,8 +133,19 @@ AgonesSDK.set_annotation('version', '1.0.0')
 ```
 
 ## Player Tracking
+As players connect and disconnect from your game, the Player Tracking functions enable you to track which players are currently connected.
 
-As of writing, the Player Tracking feature of Agones is not implemented by the SDK. Feel free to contribute and send your pull request.
+### Player connect
+```GDScript
+# Sets player 1337 as connected
+AgonesSDK.player_connect(1337)
+```
+
+### Player disconnect
+```GDScript
+# Unsets player 1337 online status
+AgonesSDK.player_disconnect(1337)
+```
 
 ## Reference
 
