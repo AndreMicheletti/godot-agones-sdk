@@ -1,4 +1,4 @@
-tool
+@tool
 extends EditorPlugin
 
 const SINGLETON_NAME = "AgonesSDK"

@@ -1,22 +1,26 @@
-tool
+@tool
 extends Node
 
 
 signal agones_response(success, endpoint, content)
 signal agones_ready_failed()
 
-var ready = false
+var isReady = false
 var agones_sdk_http_port = ""
 var requested_endpoint = ""
 
 
 func _ready():
-	if not ready:
+	if not isReady:
 		start()
 
 
 func start():
-	ready = true
+	
+	if isReady:
+		return
+	
+	isReady = true
 	agones_sdk_http_port = OS.get_environment("AGONES_SDK_HTTP_PORT")
 	if agones_sdk_http_port == "":
 		print("[AGONES] AGONES_SDK_HTTP_PORT ENV NOT SET USING DEVELOPMENT PORT")
@@ -30,13 +34,13 @@ func ready(retry = 10, wait_time = 2.0):
 	var success = false
 	while i < real_retry:
 		agones_sdk_post("/ready", {})
-		var res = yield(self, "agones_response")
+		var res = await agones_response
 		if res[0] or has_port() == false:
 			success = true
 			break
 		else:
 			print("[AGONES] ready failed. trying again (attempt %d/%d)" % [i+1, real_retry-1])
-			yield(get_tree().create_timer(wait_time), "timeout")
+			await get_tree().create_timer(wait_time).timeout			
 			i += 1
 	if not success:
 		emit_signal("agones_ready_failed")
@@ -102,26 +106,26 @@ func agones_sdk_send(endpoint: String, body: Dictionary, method = HTTPClient.MET
 
 	var req = HTTPRequest.new()
 	add_child(req)
-	req.connect("request_completed", self, "on_request_completed", [req])
+	req.request_completed.connect(on_request_completed.bind(req))
 
-	var res = req.request(sdk_url(endpoint), headers, false, method, JSON.print(body))
+	var res = req.request(sdk_url(endpoint), headers, method, JSON.stringify(body))
 	return true if res == OK else on_request_error(res)
 
 func on_request_error(error_code: int = 1) -> bool:
-	on_request_completed(error_code, 1, PoolStringArray(), PoolByteArray())
+	on_request_completed(error_code, 1, PackedStringArray(), PackedByteArray())
 	return false
 
-func on_request_completed(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray, req_node : HTTPRequest = null):
-	if req_node != null:
-		req_node.call_deferred("queue_free")
-
+func on_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, req_node : HTTPRequest = null):
 	print("[AGONES] REQUESTED COMPLETED. RESPONSE_CODE: %d | CODE: %d" % [response_code, result])
 	if result != OK:
 		emit_signal("agones_response", false, requested_endpoint, result)
 	else:
-		var dict_body = JSON.parse(body.get_string_from_utf8())
+		var dict_body = JSON.parse_string(body.get_string_from_utf8())
 		emit_signal("agones_response", true, requested_endpoint, dict_body)
 	requested_endpoint = ""
+	
+	if req_node != null:
+		req_node.queue_free()
 
 
 func sdk_url(endpoint):
