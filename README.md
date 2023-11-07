@@ -2,7 +2,6 @@
 [![Release](https://github.com/AndreMicheletti/godot-agones-sdk/actions/workflows/release.yml/badge.svg?branch=master)](https://github.com/AndreMicheletti/godot-agones-sdk/actions/workflows/release.yml)
 <img src="https://img.shields.io/github/v/release/AndreMicheletti/godot-agones-sdk"/>
 <img src="https://img.shields.io/badge/agones-1.16.0-blue"/>
-<img src="https://img.shields.io/badge/godot-3.2-blue"/>
 <img src="https://img.shields.io/badge/godot-4.0-blue"/>
 
 <p align="center">
@@ -10,6 +9,10 @@
 </p>
 
 Welcome to the community-driven [Agones](https://agones.dev/site/) SDK for [Godot Engine](https://godotengine.org/).
+
+Latest version is for **Godot 4.0**.
+
+If you're using **Godot 3.x**, please use [Release 0.3.0](https://github.com/AndreMicheletti/godot-agones-sdk/releases/tag/v0.3.0)
 
 ## Example
 
