@@ -48,6 +48,7 @@ Only GDScript is supported for now
 ## Install
 
 To install this plugin, go to [Releases](https://github.com/AndreMicheletti/godot-agones-sdk/releases) and download the latest version `agones-sdk.zip`.
+> If you are using **Godot 3.x**, please install [Release 0.3.0](https://github.com/AndreMicheletti/godot-agones-sdk/releases/tag/v0.3.0)
 
 Inside your Godot Project folder, create a folder named `addons` and extract the zip file inside it.
 
