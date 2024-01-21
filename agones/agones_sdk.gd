@@ -71,6 +71,21 @@ func player_connect(player_id: String):
 func player_disconnect(player_id: String):
 	agones_sdk_post("/alpha/player/disconnect", {"playerID": player_id})
 
+func set_player_capacity(count: int):
+	agones_sdk_put("/alpha/player/capacity", {"count": count})
+
+func get_player_capacity():
+	agones_sdk_get("/alpha/player/capacity")
+
+func get_player_count():
+	agones_sdk_get("/alpha/player/count")
+
+func is_player_connected(count: String, player_id: String):
+	agones_sdk_get("/alpha/player/connected/" + player_id)
+
+func get_connected_players():
+	agones_sdk_get("/alpha/player/connected")
+
 func set_label(key: String, value: String):
 	agones_sdk_put("/metadata/label", {"key": key, "value": value})
 
