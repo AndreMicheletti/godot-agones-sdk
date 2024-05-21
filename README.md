@@ -10,9 +10,11 @@
 
 Welcome to the community-driven [Agones](https://agones.dev/site/) SDK for [Godot Engine](https://godotengine.org/).
 
-Latest version is for **Godot 4.0**.
+Latest version is for **Godot 4.2**.
 
-If you're using **Godot 3.x**, please use [Release 0.3.0](https://github.com/AndreMicheletti/godot-agones-sdk/releases/tag/v0.3.0)
+If you're using **Godot < 4.2**, please use [Release 0.4.0](https://github.com/AndreMicheletti/godot-agones-sdk/releases/tag/v0.4.0)
+
+If you're using **Godot <= 3.x**, please use [Release 0.3.0](https://github.com/AndreMicheletti/godot-agones-sdk/releases/tag/v0.3.0)
 
 ## Example
 
