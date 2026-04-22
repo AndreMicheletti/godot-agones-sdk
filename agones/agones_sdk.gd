@@ -5,9 +5,9 @@ extends Node
 signal agones_response(success, endpoint, content)
 signal agones_ready_failed()
 
-var isReady = false
-var agones_sdk_http_port = ""
-var requested_endpoint = ""
+var isReady := false
+var agones_sdk_http_port := ""
+var agones_sdk_host := ""
 
 
 func _ready():
@@ -22,10 +22,14 @@ func start():
 	
 	isReady = true
 	agones_sdk_http_port = OS.get_environment("AGONES_SDK_HTTP_PORT")
+	agones_sdk_host = OS.get_environment("AGONES_SDK_HOST")
 	if agones_sdk_http_port == "":
 		print("[AGONES] AGONES_SDK_HTTP_PORT ENV NOT SET USING DEVELOPMENT PORT")
 		agones_sdk_http_port = "9358"
-	print("[AGONES] SDK STARTING UP... PORT FOUND: %s" % agones_sdk_http_port)
+	if agones_sdk_host == "":
+		print("[AGONES] AGONES_SDK_HOST ENV NOT SET USING DEVELOPMENT HOST")
+		agones_sdk_host = "localhost"
+	print("[AGONES] SDK STARTING UP... HOST: %s, PORT: %s" % [agones_sdk_host, agones_sdk_http_port])
 
 
 func ready(retry = 10, wait_time = 2.0):
@@ -116,36 +120,38 @@ func agones_sdk_send(endpoint: String, body: Dictionary, method = HTTPClient.MET
 		on_request_error()
 		return false
 	print("[AGONES] POST %s" % endpoint)
-	var headers = ["Content-Type: application/json"]
-	requested_endpoint = endpoint
+	var headers := ["Content-Type: application/json"]
 
-	var req = HTTPRequest.new()
+	var req := AgonesHTTPRequest.new()
 	add_child(req)
-	req.request_completed.connect(on_request_completed.bind(req))
-
-	var res = req.request(sdk_url(endpoint), headers, method, JSON.stringify(body))
+	req.agones_request_completed.connect(on_request_completed)
+	var res := req.make_request(endpoint, headers, method, JSON.stringify(body))
 	return true if res == OK else on_request_error(res)
 
 func on_request_error(error_code: int = 1) -> bool:
-	on_request_completed(error_code, 1, PackedStringArray(), PackedByteArray())
+	on_request_completed('', error_code, 1, PackedStringArray(), PackedByteArray())
 	return false
 
-func on_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, req_node : HTTPRequest = null):
-	print("[AGONES] REQUESTED COMPLETED. RESPONSE_CODE: %d | CODE: %d" % [response_code, result])
+
+func on_request_completed(endpoint: String, result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, req_node : HTTPRequest = null):
+	print("[AGONES] %s REQUESTED COMPLETED. RESPONSE_CODE: %d | CODE: %d" % [endpoint, response_code, result])
 	if result != OK:
-		emit_signal("agones_response", false, requested_endpoint, result)
+		agones_response.emit(false, endpoint, result)
 	else:
 		var dict_body = JSON.parse_string(body.get_string_from_utf8())
-		emit_signal("agones_response", true, requested_endpoint, dict_body)
-	requested_endpoint = ""
+		agones_response.emit(true, endpoint, dict_body)
 	
 	if req_node != null:
 		req_node.queue_free()
 
 
-func sdk_url(endpoint):
-	return "http://localhost:%s%s" % [agones_sdk_http_port, endpoint]
-
-
-func has_port():
+func has_port() -> bool:
 	return agones_sdk_http_port != ""
+
+
+func get_port() -> String:
+	return agones_sdk_http_port
+
+
+func get_host() -> String:
+	return agones_sdk_host
