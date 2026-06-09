@@ -124,9 +124,13 @@ func agones_sdk_send(endpoint: String, body: Dictionary, method = HTTPClient.MET
 
 	var req := AgonesHTTPRequest.new()
 	add_child(req)
-	req.agones_request_completed.connect(on_request_completed)
+	req.agones_request_completed.connect(on_request_completed.bind(req))
 	var res := req.make_request(endpoint, headers, method, JSON.stringify(body))
-	return true if res == OK else on_request_error(res)
+	if res == OK:
+		return true
+	# make_request never fired the completion signal, so free the node here.
+	req.queue_free()
+	return on_request_error(res)
 
 func on_request_error(error_code: int = 1) -> bool:
 	on_request_completed('', error_code, 1, PackedStringArray(), PackedByteArray())
