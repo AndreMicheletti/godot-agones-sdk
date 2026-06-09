@@ -154,6 +154,52 @@ AgonesSDK.player_connect(1337)
 AgonesSDK.player_disconnect(1337)
 ```
 
+## Counters & Lists (Beta)
+
+[Counters and Lists](https://agones.dev/site/docs/guides/counters-and-lists/) let you track
+arbitrary numeric counters and string lists on your GameServer (player tracking, team slots,
+etc). These are **Beta** Agones features and require **Agones 1.37+** (enabled by default since 1.45).
+
+Like the rest of the SDK, every call is asynchronous and reports back through the
+`agones_response(success, endpoint, content)` signal. For reads, `content` is the
+returned `Counter` (`{name, count, capacity}`) or `List` (`{name, capacity, values}`).
+
+### Lists
+
+```GDScript
+# Add a value to a list (e.g. mark a player as connected)
+AgonesSDK.append_list_value("players", "player-123")
+
+# Remove a value from a list
+AgonesSDK.delete_list_value("players", "player-123")
+
+# Read a list
+var result = await AgonesSDK.get_list("players")
+# result[2] -> { "name": "players", "capacity": 64, "values": ["player-123"] }
+
+# Set the maximum capacity of a list
+AgonesSDK.set_list_capacity("players", 64)
+```
+
+> `add_list_value` / `remove_list_value` are available as aliases matching the
+> Agones REST endpoint names (`:addValue` / `:removeValue`).
+
+### Counters
+
+```GDScript
+# Increment / decrement a counter (defaults to 1)
+AgonesSDK.increment_counter("rooms")
+AgonesSDK.decrement_counter("rooms", 2)
+
+# Set an absolute count or capacity
+AgonesSDK.set_counter_count("rooms", 5)
+AgonesSDK.set_counter_capacity("rooms", 10)
+
+# Read a counter
+var result = await AgonesSDK.get_counter("rooms")
+# result[2] -> { "name": "rooms", "count": 5, "capacity": 10 }
+```
+
 ## Reference
 
 | Type | Syntax | Description |
@@ -163,6 +209,15 @@ AgonesSDK.player_disconnect(1337)
 | `func` | `.reserve(seconds)` | Reserve for `seconds` |
 | `func` | `.allocate()` | Set GameServer as Allocated |
 | `func` | `.shutdown()` | Tells Agones to shutdown server |
+| `func` | `.get_counter(name)` | Get a Counter. Response `content` is `{name, count, capacity}` |
+| `func` | `.increment_counter(name, amount = 1)` | Increase a Counter's count by `amount` |
+| `func` | `.decrement_counter(name, amount = 1)` | Decrease a Counter's count by `amount` |
+| `func` | `.set_counter_count(name, count)` | Set a Counter's count to an absolute value |
+| `func` | `.set_counter_capacity(name, capacity)` | Set a Counter's maximum capacity |
+| `func` | `.get_list(name)` | Get a List. Response `content` is `{name, capacity, values}` |
+| `func` | `.append_list_value(name, value)` | Add `value` to a List (alias: `add_list_value`) |
+| `func` | `.delete_list_value(name, value)` | Remove `value` from a List (alias: `remove_list_value`) |
+| `func` | `.set_list_capacity(name, capacity)` | Set a List's maximum capacity |
 | `signal` | `agones_response(success, endpoint, content)` | Emitted when SDK receives an response from Agones. `success` Boolean if response is sucessfull. `endpoint` the requested endpoint. `content` the error message or request body, usually as a Dictionary |
 | `signal` | `agones_ready_failed` | Emitted when `.ready` fails all its attempts.  |
 
