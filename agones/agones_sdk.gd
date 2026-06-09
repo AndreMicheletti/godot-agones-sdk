@@ -97,7 +97,65 @@ func set_label(key: String, value: String):
 func set_annotation(key: String, value: String):
 	agones_sdk_put("/metadata/annotation", {"key": key, "value": value})
 
-	
+
+# --- Counters (Beta) ---
+# See https://agones.dev/site/docs/guides/counters-and-lists/
+
+func get_counter(name: String) -> bool:
+	return agones_sdk_get("/v1beta1/counters/" + name)
+
+
+func increment_counter(name: String, amount: int = 1) -> bool:
+	return _update_counter(name, {"countDiff": amount})
+
+
+func decrement_counter(name: String, amount: int = 1) -> bool:
+	return _update_counter(name, {"countDiff": -amount})
+
+
+func set_counter_count(name: String, count: int) -> bool:
+	return _update_counter(name, {"count": count})
+
+
+func set_counter_capacity(name: String, capacity: int) -> bool:
+	return _update_counter(name, {"capacity": capacity})
+
+
+func _update_counter(name: String, fields: Dictionary) -> bool:
+	var body := {"name": name}
+	body.merge(fields)
+	return agones_sdk_patch("/v1beta1/counters/" + name, body)
+
+
+# --- Lists (Beta) ---
+
+func get_list(name: String) -> bool:
+	return agones_sdk_get("/v1beta1/lists/" + name)
+
+
+func append_list_value(name: String, value: String) -> bool:
+	return agones_sdk_post("/v1beta1/lists/" + name + ":addValue", {"value": value})
+
+
+func delete_list_value(name: String, value: String) -> bool:
+	return agones_sdk_post("/v1beta1/lists/" + name + ":removeValue", {"value": value})
+
+
+# Aliases mirroring the Agones REST endpoint names (:addValue / :removeValue)
+func add_list_value(name: String, value: String) -> bool:
+	return append_list_value(name, value)
+
+
+func remove_list_value(name: String, value: String) -> bool:
+	return delete_list_value(name, value)
+
+
+func set_list_capacity(name: String, capacity: int) -> bool:
+	# UpdateList requires a field mask telling Agones which fields to apply.
+	var endpoint := "/v1beta1/lists/" + name + "?updateMask=capacity"
+	return agones_sdk_patch(endpoint, {"name": name, "capacity": capacity})
+
+
 func agones_sdk_get(endpoint: String) -> bool:
 	if not has_port():
 		print("[AGONES] AGONES_SDK_HTTP_PORT not found. skipping %s call" % endpoint)
@@ -112,6 +170,10 @@ func agones_sdk_post(endpoint: String, body: Dictionary) -> bool:
 
 func agones_sdk_put(endpoint: String, body: Dictionary) -> bool:
 	return agones_sdk_send(endpoint, body, HTTPClient.METHOD_PUT)
+
+
+func agones_sdk_patch(endpoint: String, body: Dictionary) -> bool:
+	return agones_sdk_send(endpoint, body, HTTPClient.METHOD_PATCH)
 
 
 func agones_sdk_send(endpoint: String, body: Dictionary, method = HTTPClient.METHOD_POST) -> bool:
